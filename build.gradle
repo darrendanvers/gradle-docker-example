@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'pmd'              // Use the PMD plugin for static analysis just
+                          // to have something interesting happening.
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'gradle-docker-example',
+                'Main-Class': 'dev.codestijl.gradledocker.App'
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
+
+application {
+    // Define the main class for the application.
+    mainClassName = 'dev.codestijl.gradledocker.App'
+}

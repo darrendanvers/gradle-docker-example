@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!-- My preferred PMD configuration. -->
+<ruleset name="Custom ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    <description>
+        PMD configuration.
+    </description>
+
+    <rule ref="category/java/bestpractices.xml" />
+
+    <rule ref="category/java/codestyle.xml">
+        <!-- Forcing only one return is a mistake. It allows code to be cleaner -->
+        <!-- if you allow for multiple returns. -->
+        <exclude name="OnlyOneReturn" />
+        <!-- Requiring a constructor clutters up the code and doesn't add a lot of value. -->
+        <exclude name="AtLeastOneConstructor" />
+    </rule>
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+        <properties>
+            <!-- I don't like forcing certain classes to be name Factory or Util. The pattern is useful -->
+            <!-- for other types of classes as well. -->
+            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]*" />
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/ShortMethodName">
+        <properties>
+            <!-- "of" is a ver common function name. -->
+            <property name="minimum" value="2" />
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/LinguisticNaming" >
+        <properties>
+            <!-- I prefer the builder pattern for setters. This rule requires you to return void. -->
+            <property name="checkSetters" value="false" />
+            <!--The way I like to name tests breaks this rule, so ignore anything annotated as @Test. -->
+            <property name="violationSuppressXPath" value="//ClassOrInterfaceBodyDeclaration/Annotation/MarkerAnnotation//Name[@Image='Test']" />
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/FieldNamingConventions" >
+        <properties>
+            <!-- I like to name my logger fields "logger" and not be all capitalized. -->
+            <property name="exclusions" value="serialVersionUID|logger" />
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/MethodNamingConventions" >
+        <properties>
+            <!-- I like have underscores in my test names. This allows for that. -->
+            <property name="junit4TestPattern" value="[a-z][a-zA-Z0-9_]*" />
+        </properties>
+    </rule>
+
+
+    <rule ref="category/java/design.xml">
+        <!-- As much as I theoretically like the Law of Demeter, the test for it hasn't kept up -->
+        <!-- with how a lot of coding is done. It can't handle stream processing. -->
+        <exclude name="LawOfDemeter" />
+        <!-- This rule has to be configured explicitly. There are no defaults. Since there is nothing -->
+        <!-- I want to put in here, I excluded it to remove a warning during build. See -->
+        <!-- https://pmd.github.io/latest/pmd_rules_java_design.html#loosepackagecoupling for how to configure -->
+        <!-- this rule if you want to use 0it. -->
+        <exclude name="LoosePackageCoupling" />
+    </rule>
+
+    <rule ref="category/java/documentation.xml"/>
+    <rule ref="category/java/documentation.xml/CommentRequired">
+        <properties>
+            <!-- Field comments can clutter the code. -->
+            <property name="fieldCommentRequirement" value="Ignored" />
+        </properties>
+    </rule>
+    <rule ref="category/java/documentation.xml/CommentSize">
+        <properties>
+            <!-- 6 lines is too restrictive for comment length as it includes the Javadoc comments. -->
+            <property name="maxLines" value="30" />
+            <!-- I want the line size to match the code requirement. -->
+            <property name="maxLineLength" value="150" />
+        </properties>
+    </rule>
+
+    <rule ref="category/java/multithreading.xml"/>
+
+    <rule ref="category/java/performance.xml"/>
+
+    <rule ref="category/java/security.xml"/>
+
+    <rule ref="rulesets/java/quickstart.xml"/>
+
+    <rule ref="category/java/errorprone.xml">
+        <!-- This rule is poorly implemented and should exclude things that do not -->
+        <!-- are not beans. As it adds too much noise, I'm excluding it. -->
+        <exclude name="BeanMembersShouldSerialize"/>
+    </rule>
+    <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis">
+        <properties>
+            <!-- There is a bug in PMD and it will trigger this rule in for (x : any-sort-of-collection) {} loops. -->
+            <!-- Turning off as the compiler would flag these anyway. -->
+            <property name="violationSuppressRegex" value="^Found 'UR'-anomaly.*"/>
+        </properties>
+    </rule>
+</ruleset>
